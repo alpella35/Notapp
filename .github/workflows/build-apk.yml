@@ -21,14 +21,22 @@ jobs:
         apt-get update
         apt-get install -y openjdk-11-jdk
     
+    - name: Verify Java
+      run: java -version && javac -version
+    
     - name: Build APK
       working-directory: ./NotificationAlarmApp
       run: |
         chmod +x gradlew
-        ./gradlew assembleDebug
+        ./gradlew assembleDebug --info --stacktrace 2>&1 | tail -200
+    
+    - name: Check APK exists
+      run: |
+        ls -lah NotificationAlarmApp/app/build/outputs/apk/debug/ || echo "APK dizini bulunamadı"
     
     - name: Upload APK
       uses: actions/upload-artifact@v4
+      if: success()
       with:
         name: app-debug
         path: NotificationAlarmApp/app/build/outputs/apk/debug/app-debug.apk
