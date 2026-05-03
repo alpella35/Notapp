@@ -11,28 +11,33 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - uses: actions/setup-java@v4
+    - name: Set up JDK
+      uses: actions/setup-java@v4
       with:
         java-version: '11'
         distribution: 'temurin'
     
-    - name: Create local.properties
+    - name: Install Android SDK
       run: |
-        echo "sdk.dir=$ANDROID_HOME" > NotificationAlarmApp/local.properties
+        yes | ${ANDROID_HOME}/tools/bin/sdkmanager "platforms;android-34"
+        yes | ${ANDROID_HOME}/tools/bin/sdkmanager "build-tools;34.0.0"
     
-    - uses: gradle/actions/setup-gradle@v3
-      with:
-        cache-disabled: true
+    - name: Debug Info
+      run: |
+        java -version
+        ls -la $ANDROID_HOME/
     
     - name: Build APK
       run: |
         cd NotificationAlarmApp
         chmod +x gradlew
-        ./gradlew assembleDebug --no-daemon
+        ./gradlew assembleDebug -v 2>&1 | tail -100
+    
+    - name: Check APK
+      run: ls -lah NotificationAlarmApp/app/build/outputs/apk/debug/
     
     - name: Upload APK
       uses: actions/upload-artifact@v4
-      if: success()
       with:
         name: app-debug
         path: NotificationAlarmApp/app/build/outputs/apk/debug/app-debug.apk
