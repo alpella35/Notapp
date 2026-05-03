@@ -16,14 +16,23 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
     
-    - uses: gradle/gradle-build-action@v3
+    - name: Create local.properties
+      run: |
+        echo "sdk.dir=$ANDROID_HOME" > NotificationAlarmApp/local.properties
+    
+    - uses: gradle/actions/setup-gradle@v3
+      with:
+        cache-disabled: true
     
     - name: Build APK
       run: |
         cd NotificationAlarmApp
-        ./gradlew assembleDebug
+        chmod +x gradlew
+        ./gradlew assembleDebug --no-daemon
     
-    - uses: actions/upload-artifact@v4
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      if: success()
       with:
-        name: app-debug.apk
+        name: app-debug
         path: NotificationAlarmApp/app/build/outputs/apk/debug/app-debug.apk
