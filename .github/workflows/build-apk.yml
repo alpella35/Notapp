@@ -17,24 +17,18 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
     
-    - name: Install Android SDK
+    - name: Accept Android Licenses
       run: |
-        yes | ${ANDROID_HOME}/tools/bin/sdkmanager "platforms;android-34"
-        yes | ${ANDROID_HOME}/tools/bin/sdkmanager "build-tools;34.0.0"
+        mkdir -p $ANDROID_HOME/licenses
+        echo "d56f5187479451eabf01fb78af6dfcb131b33910" > $ANDROID_HOME/licenses/android-sdk-license
+        echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" > $ANDROID_HOME/licenses/android-sdk-preview-license
     
-    - name: Debug Info
-      run: |
-        java -version
-        ls -la $ANDROID_HOME/
-    
-    - name: Build APK
+    - name: Build APK with Gradle
       run: |
         cd NotificationAlarmApp
         chmod +x gradlew
-        ./gradlew assembleDebug -v 2>&1 | tail -100
-    
-    - name: Check APK
-      run: ls -lah NotificationAlarmApp/app/build/outputs/apk/debug/
+        ./gradlew --version
+        ./gradlew assembleDebug
     
     - name: Upload APK
       uses: actions/upload-artifact@v4
