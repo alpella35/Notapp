@@ -11,28 +11,26 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Clone repository
-      run: |
-        git clone https://github.com/${{ github.repository }}.git .
-        git checkout ${{ github.sha }}
+    - name: Checkout code
+      uses: actions/checkout@v3
     
     - name: Set up JDK 11
-      run: |
-        apt-get update
-        apt-get install -y openjdk-11-jdk
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
     
-    - name: Verify Java
-      run: java -version && javac -version
+    - name: Set up Android SDK
+      uses: android-actions/setup-android@v2
+      with:
+        api-level: 34
+        build-tools-version: 34.0.0
     
     - name: Build APK
       working-directory: ./NotificationAlarmApp
       run: |
         chmod +x gradlew
-        ./gradlew assembleDebug --info --stacktrace 2>&1 | tail -200
-    
-    - name: Check APK exists
-      run: |
-        ls -lah NotificationAlarmApp/app/build/outputs/apk/debug/ || echo "APK dizini bulunamadı"
+        ./gradlew assembleDebug --stacktrace
     
     - name: Upload APK
       uses: actions/upload-artifact@v4
