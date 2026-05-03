@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Notification Alarm</string>
+    <string name="notification_listener_service">Notification Listener</string>
+    <string name="start_alarm">Alarmu Başlat</string>
+    <string name="stop_alarm">Alarmu Durdur</string>
+    <string name="settings">Ayarlar</string>
+    <string name="keywords">Anahtar Kelimeler</string>
+    <string name="stop_keyword">Durma Kelimesi</string>
+    <string name="enter_keywords">Anahtar kelimeler girin (virgülle ayırın)</string>
+    <string name="enter_stop_keyword">Alarm durdurma kelimesini girin</string>
+    <string name="save_settings">Ayarları Kaydet</string>
+</resources>
